@@ -1,0 +1,205 @@
+:root{
+  --paper: #F5F0E3;
+  --paper-2: #EFE8D6;
+  --ink: #2B241C;
+  --ink-soft: #6B6255;
+  --line: #C9BFA9;
+  --brass: #A8752E;
+  --brass-soft: #E8D9BC;
+  --good: #3F6B35;
+  --good-bg: #E4EEDD;
+  --bad: #A23E2D;
+  --bad-bg: #F5E1DB;
+  --radius: 14px;
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding: 28px 16px 60px;
+}
+.app{
+  width:100%;
+  max-width: 640px;
+}
+header{
+  text-align:center;
+  margin-bottom: 22px;
+}
+h1{
+  font-family:'Source Serif 4', serif;
+  font-weight:600;
+  font-size: clamp(22px, 5vw, 30px);
+  margin: 0 0 4px;
+  letter-spacing: 0.2px;
+}
+header p{
+  margin:0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.card{
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.settings{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap: 12px;
+}
+.field label{
+  display:block;
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+select{
+  width:100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.range-fields{
+  display:flex;
+  gap: 8px;
+  grid-column: span 2;
+}
+.range-fields .field{ flex:1; }
+.staff-card{
+  text-align:center;
+  padding: 22px 10px 10px;
+}
+#staff{
+  display:flex;
+  justify-content:center;
+  min-height: 160px;
+}
+#staff svg{ max-width:100%; height:auto; }
+.score{
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+.listen-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: 14px;
+}
+.listen-btn{
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  border: 2px solid var(--brass);
+  background: var(--paper);
+  color: var(--brass);
+  font-family: 'Source Serif 4', serif;
+  font-size: 16px;
+  font-weight:600;
+  cursor:pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.listen-btn:active{ transform: scale(0.97); }
+.listen-btn.active{
+  background: var(--brass);
+  color: var(--paper);
+  box-shadow: 0 0 0 8px var(--brass-soft);
+}
+.level-meter{
+  width: 200px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow:hidden;
+}
+.level-meter-fill{
+  height:100%;
+  width:0%;
+  background: var(--brass);
+  transition: width 0.06s linear;
+}
+.hint{
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align:center;
+  max-width: 360px;
+}
+.feedback{
+  min-height: 24px;
+  font-family: 'Source Serif 4', serif;
+  font-size: 17px;
+  text-align:center;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+.feedback.correct{ background: var(--good-bg); color: var(--good); }
+.feedback.wrong{ background: var(--bad-bg); color: var(--bad); }
+.feedback.octave{ background: var(--bad-bg); color: var(--brass); }
+.toggle-manual{
+  background:none;
+  border:none;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  font-size: 13px;
+  cursor:pointer;
+  padding: 4px;
+}
+.manual-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.manual-buttons button{
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Source Serif 4', serif;
+  font-size: 16px;
+  cursor:pointer;
+}
+.manual-buttons button:hover{ border-color: var(--brass); color: var(--brass); }
+.mic-error{
+  font-size: 13px;
+  color: var(--bad);
+  text-align:center;
+  max-width: 380px;
+}
+footer{
+  text-align:center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.controls-row{ display:block; }
+/* iPad e tablet in orizzontale: pentagramma resta in alto,
+   impostazioni e ascolto affiancati per stare in una sola schermata */
+@media (min-width: 760px) and (orientation: landscape){
+  .app{ max-width: 880px; }
+  .controls-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items:start;
+  }
+  .controls-row .card{ margin-bottom:0; }
+}

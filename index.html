@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Leggi le note — esercizio pentagramma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Leggi le note</h1>
+    <p>Esercizio di lettura del pentagramma — scala di Do maggiore</p>
+  </header>
+
+  <div class="card staff-card">
+    <div id="staff"></div>
+    <div class="score" id="score">Corrette: 0 / 0</div>
+  </div>
+
+  <div class="controls-row">
+    <div class="card">
+      <div class="settings">
+        <div class="field">
+          <label for="clef-select">Chiave</label>
+          <select id="clef-select">
+            <option value="treble">Violino</option>
+            <option value="bass">Basso</option>
+            <option value="grand">Gran pentagramma</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="position-select">Note su</label>
+          <select id="position-select">
+            <option value="both">Righe e spazi</option>
+            <option value="lines">Solo righe</option>
+            <option value="spaces">Solo spazi</option>
+          </select>
+        </div>
+        <div class="range-fields">
+          <div class="field">
+            <label for="min-note">Nota minima</label>
+            <select id="min-note"></select>
+          </div>
+          <div class="field">
+            <label for="max-note">Nota massima</label>
+            <select id="max-note"></select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card listen-area">
+      <button id="listen-btn" class="listen-btn">Ascolta</button>
+      <div class="level-meter"><div class="level-meter-fill" id="level-fill"></div></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="hint" id="hint">Premi "Ascolta", consenti l'uso del microfono, poi suona la nota sul piano.</div>
+      <div class="mic-error" id="mic-error" style="display:none;"></div>
+      <button class="toggle-manual" id="toggle-manual">Preferisci rispondere toccando lo schermo?</button>
+      <div class="manual-buttons" id="manual-buttons" style="display:none;"></div>
+    </div>
+  </div>
+
+  <footer>Nessun dato lascia questo dispositivo: microfono e note restano nel browser.</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vexflow@4/build/cjs/vexflow.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
