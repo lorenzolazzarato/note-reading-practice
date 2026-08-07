@@ -134,7 +134,9 @@ function evaluateManualLetter(letter) {
 /* ---------- pipeline audio ---------- */
 const tracker = createPitchTracker({
   onLevel: (rms) => {
-    const pct = Math.min(100, Math.round(rms * 400));
+    // Scala non lineare: rende visibile anche il livello delle note acute (più deboli),
+    // senza far sbattere la barra al 100% sulle note gravi suonate forte.
+    const pct = Math.min(100, Math.round(Math.sqrt(rms) * 250));
     levelFill.style.width = pct + '%';
   },
   onStablePitch: (midi) => evaluateMidi(midi),
