@@ -7,8 +7,8 @@ import { freqToMidi } from './music-theory.js';
 const STABILITY_WINDOW = 5;
 const CLARITY_THRESHOLD = 0.92;
 const MIN_FREQ = 55; // poco sotto A1
-const MAX_FREQ = 1100; // poco sopra C6
-const MIN_RMS = 0.012;
+const MAX_FREQ = 1400; // sopra C6, margine per estendere il range in futuro
+const MIN_RMS = 0.004;
 
 function median(arr) {
   const s = [...arr].sort((a, b) => a - b);
@@ -36,7 +36,10 @@ export function createPitchTracker(callbacks) {
     await audioContext.resume();
     if (!micStream) {
       micStream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+        // AGC attivo: il tablet è sul leggio, lontano dalle corde, e da solo non basta a
+        // portare in soglia le note acute (più deboli e più brevi). echoCancellation e
+        // noiseSuppression restano disattivati per non alterare il timbro del pitch.
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true },
       });
     }
     if (!analyserNode) {
