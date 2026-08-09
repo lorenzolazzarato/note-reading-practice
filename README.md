@@ -46,15 +46,21 @@ poi apri `http://localhost:8000`.
 
 In `js/audio.js`:
 
-- `CLARITY_THRESHOLD` (default 0.92) — quanto dev'essere "pulito" il pitch
-  rilevato prima di accettarlo. Se ci sono troppi mancati riconoscimenti,
-  abbassalo leggermente; se ci sono troppi falsi positivi, alzalo.
-- `MIN_RMS` (default 0.004, prima 0.012) — soglia di volume minimo per
-  considerare il segnale un suono e non rumore di fondo. Abbassato dopo i
-  primi test dal vivo: con il tablet sul leggio (lontano dalle corde) le
-  note acute, più deboli e più brevi, non arrivavano in soglia.
+- `CLARITY_THRESHOLD` (default 0.88, prima 0.92) — quanto dev'essere "pulito"
+  il pitch rilevato prima di accettarlo. Abbassato dopo i test dal vivo: le
+  note dell'ottava 6 non venivano riconosciute, probabilmente perché le corde
+  corte producono più armoniche relative al fondamentale, il che abbassa la
+  "pulizia" misurata da Pitchy pur trattandosi della nota giusta. Se tornano
+  troppi falsi positivi, alzalo di nuovo verso 0.92.
+- `MIN_RMS` (default 0.003, prima 0.004, prima ancora 0.012) — soglia di
+  volume minimo per considerare il segnale un suono e non rumore di fondo.
+  Abbassato progressivamente: con il tablet sul leggio (lontano dalle corde)
+  le note acute, più deboli e più brevi, restavano sotto soglia via via che
+  si saliva di ottava.
 - `STABILITY_WINDOW` (default 5) — quanti frame consecutivi stabili servono
   prima di accettare una risposta. Più alto = più affidabile ma più lento.
+  Prossima leva da provare se le note più acute (che decadono in fretta)
+  continuano a non essere agganciate in tempo: scendere a 3-4.
 - `MAX_FREQ` (default 1400 Hz) — margine sopra C6 per poter estendere in
   futuro il range di note senza toccare questo file.
 
@@ -63,9 +69,3 @@ In `js/audio.js`:
 distanza tablet–piano, che altrimenti fa apparire tutte le note (specie le
 acute) troppo deboli — è il motivo per cui la barra di livello si alzava
 sempre pochissimo.
-
-Se dopo questi aggiustamenti le note più acute continuano a non essere
-riconosciute, il prossimo parametro da abbassare è `CLARITY_THRESHOLD`
-(es. 0.88): le corde corte producono più armoniche relative al fondamentale,
-il che può abbassare la "pulizia" misurata dal Pitchy pur trattandosi della
-nota giusta.
