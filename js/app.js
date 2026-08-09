@@ -31,8 +31,29 @@ for (let idx = NOTE_OPTIONS_MIN_IDX; idx <= NOTE_OPTIONS_MAX_IDX; idx++) {
   minSelect.appendChild(optA);
   maxSelect.appendChild(optB);
 }
-minSelect.value = theory.diatonicIndex('C', 3);
-maxSelect.value = theory.diatonicIndex('C', 6);
+/* ---------- range predefinito, indipendente per ciascuna chiave ---------- */
+const DEFAULT_RANGE_BY_CLEF = {
+  treble: { minIdx: theory.diatonicIndex('C', 3), maxIdx: theory.diatonicIndex('C', 6) },
+  bass: { minIdx: theory.diatonicIndex('C', 2), maxIdx: theory.diatonicIndex('C', 5) },
+  grand: { minIdx: theory.diatonicIndex('C', 2), maxIdx: theory.diatonicIndex('C', 6) },
+};
+// Copia di lavoro: ogni chiave ricorda il proprio range anche mentre si sta
+// usando un'altra chiave, così passare da violino a basso e ritorno non fa
+// perdere le impostazioni dell'una o dell'altra.
+const rangesByClef = structuredClone(DEFAULT_RANGE_BY_CLEF);
+let activeClef = clefSelect.value;
+
+function isValidOption(select, value) {
+  return [...select.options].some((o) => o.value === String(value));
+}
+
+function applyRangeForClef(clef) {
+  const range = rangesByClef[clef] || DEFAULT_RANGE_BY_CLEF[clef];
+  minSelect.value = range.minIdx;
+  maxSelect.value = range.maxIdx;
+}
+
+applyRangeForClef(activeClef);
 
 /* ---------- impostazioni salvate (localStorage, solo su questo dispositivo) ---------- */
 const SETTINGS_KEY = 'leggi-le-note:settings';
@@ -42,18 +63,22 @@ function loadSavedSettings() {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    if (saved.clef && [...clefSelect.options].some((o) => o.value === saved.clef)) {
+    if (saved.clef && isValidOption(clefSelect, saved.clef)) {
       clefSelect.value = saved.clef;
     }
     if (saved.position && [...positionSelect.options].some((o) => o.value === saved.position)) {
       positionSelect.value = saved.position;
     }
-    if (saved.minIdx != null && [...minSelect.options].some((o) => o.value === String(saved.minIdx))) {
-      minSelect.value = saved.minIdx;
+    if (saved.rangesByClef) {
+      for (const clef of Object.keys(rangesByClef)) {
+        const r = saved.rangesByClef[clef];
+        if (r && isValidOption(minSelect, r.minIdx) && isValidOption(maxSelect, r.maxIdx)) {
+          rangesByClef[clef] = { minIdx: r.minIdx, maxIdx: r.maxIdx };
+        }
+      }
     }
-    if (saved.maxIdx != null && [...maxSelect.options].some((o) => o.value === String(saved.maxIdx))) {
-      maxSelect.value = saved.maxIdx;
-    }
+    activeClef = clefSelect.value;
+    applyRangeForClef(activeClef);
   } catch {
     // localStorage non disponibile (es. modalità privata) o dato corrotto: si resta sui default.
   }
@@ -66,8 +91,7 @@ function saveSettings() {
       JSON.stringify({
         clef: clefSelect.value,
         position: positionSelect.value,
-        minIdx: minSelect.value,
-        maxIdx: maxSelect.value,
+        rangesByClef,
       })
     );
   } catch {
@@ -210,8 +234,22 @@ listenBtn.addEventListener('click', () => {
 });
 
 /* ---------- aggiornamento impostazioni ---------- */
-[clefSelect, positionSelect, minSelect, maxSelect].forEach((el) => {
+clefSelect.addEventListener('change', () => {
+  activeClef = clefSelect.value;
+  applyRangeForClef(activeClef);
+  saveSettings();
+  nextNote();
+});
+positionSelect.addEventListener('change', () => {
+  saveSettings();
+  nextNote();
+});
+[minSelect, maxSelect].forEach((el) => {
   el.addEventListener('change', () => {
+    rangesByClef[activeClef] = {
+      minIdx: parseInt(minSelect.value, 10),
+      maxIdx: parseInt(maxSelect.value, 10),
+    };
     saveSettings();
     nextNote();
   });

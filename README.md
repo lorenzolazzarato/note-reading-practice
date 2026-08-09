@@ -20,9 +20,12 @@ tramite moduli ES nativi (`<script type="module">`).
 
 Chiave, posizione (righe/spazi) e range di note vengono salvati in
 `localStorage` a ogni modifica e ricaricati all'avvio: riapri l'app e ritrovi
-le impostazioni di prima, sullo stesso dispositivo/browser. Non viene
-salvato altro (punteggio, cronologia): quello resta solo per la sessione
-corrente, come da scelta di design del progetto.
+le impostazioni di prima, sullo stesso dispositivo/browser. Il range di note
+è salvato **separatamente per ciascuna chiave**: passando da violino a basso
+e tornando a violino si ritrova il range impostato per il violino, non
+quello lasciato sul basso. Non viene salvato altro (punteggio, cronologia):
+quello resta solo per la sessione corrente, come da scelta di design del
+progetto.
 
 ## Sviluppo in locale
 
