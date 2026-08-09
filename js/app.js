@@ -34,6 +34,49 @@ for (let idx = NOTE_OPTIONS_MIN_IDX; idx <= NOTE_OPTIONS_MAX_IDX; idx++) {
 minSelect.value = theory.diatonicIndex('C', 3);
 maxSelect.value = theory.diatonicIndex('C', 6);
 
+/* ---------- impostazioni salvate (localStorage, solo su questo dispositivo) ---------- */
+const SETTINGS_KEY = 'leggi-le-note:settings';
+
+function loadSavedSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (saved.clef && [...clefSelect.options].some((o) => o.value === saved.clef)) {
+      clefSelect.value = saved.clef;
+    }
+    if (saved.position && [...positionSelect.options].some((o) => o.value === saved.position)) {
+      positionSelect.value = saved.position;
+    }
+    if (saved.minIdx != null && [...minSelect.options].some((o) => o.value === String(saved.minIdx))) {
+      minSelect.value = saved.minIdx;
+    }
+    if (saved.maxIdx != null && [...maxSelect.options].some((o) => o.value === String(saved.maxIdx))) {
+      maxSelect.value = saved.maxIdx;
+    }
+  } catch {
+    // localStorage non disponibile (es. modalità privata) o dato corrotto: si resta sui default.
+  }
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({
+        clef: clefSelect.value,
+        position: positionSelect.value,
+        minIdx: minSelect.value,
+        maxIdx: maxSelect.value,
+      })
+    );
+  } catch {
+    // storage pieno o non disponibile: le impostazioni restano solo per la sessione corrente.
+  }
+}
+
+loadSavedSettings();
+
 /* ---------- pulsanti risposta manuale (fallback se il microfono non è disponibile) ---------- */
 theory.LETTERS.forEach((letter) => {
   const btn = document.createElement('button');
@@ -168,7 +211,10 @@ listenBtn.addEventListener('click', () => {
 
 /* ---------- aggiornamento impostazioni ---------- */
 [clefSelect, positionSelect, minSelect, maxSelect].forEach((el) => {
-  el.addEventListener('change', () => nextNote());
+  el.addEventListener('change', () => {
+    saveSettings();
+    nextNote();
+  });
 });
 
 /* ---------- avvio ---------- */

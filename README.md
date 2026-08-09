@@ -18,6 +18,12 @@ js/app.js            collega UI, teoria musicale e audio
 Nessun build step: sono file statici, caricati dal browser così come sono
 tramite moduli ES nativi (`<script type="module">`).
 
+Chiave, posizione (righe/spazi) e range di note vengono salvati in
+`localStorage` a ogni modifica e ricaricati all'avvio: riapri l'app e ritrovi
+le impostazioni di prima, sullo stesso dispositivo/browser. Non viene
+salvato altro (punteggio, cronologia): quello resta solo per la sessione
+corrente, come da scelta di design del progetto.
+
 ## Sviluppo in locale
 
 Il microfono richiede un contesto sicuro (HTTPS o `localhost`): non basta
