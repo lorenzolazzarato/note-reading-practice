@@ -16,6 +16,7 @@ const clefSelect = document.getElementById('clef-select');
 const positionSelect = document.getElementById('position-select');
 const minSelect = document.getElementById('min-note');
 const maxSelect = document.getElementById('max-note');
+const accidentalsToggle = document.getElementById('accidentals-toggle');
 
 /* ---------- popolamento select nota minima / massima ---------- */
 const NOTE_OPTIONS_MIN_IDX = theory.diatonicIndex('C', 2);
@@ -128,6 +129,7 @@ function readConfig() {
     position: positionSelect.value,
     minIdx: parseInt(minSelect.value, 10),
     maxIdx: parseInt(maxSelect.value, 10),
+    accidentals: accidentalsToggle.checked,
   };
 }
 
@@ -177,12 +179,15 @@ function evaluateMidi(detectedMidi) {
     feedbackEl.className = 'feedback octave';
     lockAndAdvance(1800);
   } else {
-    feedbackEl.textContent = `Non corretta — hai suonato ${theory.midiToName(detectedMidi)}, era ${currentNote.letter}${currentNote.octave}`;
+    feedbackEl.textContent = `Non corretta — hai suonato ${theory.midiToName(detectedMidi)}, era ${theory.formatNoteLabel(currentNote)}`;
     feedbackEl.className = 'feedback wrong';
     lockAndAdvance(1800);
   }
 }
 
+// Il fallback a tocco chiede solo la lettera (ignora ottava e accidente, come già
+// per l'ottava): è pensato come alternativa di base quando il microfono non è
+// disponibile, non come test completo di lettura degli accidentali.
 function evaluateManualLetter(letter) {
   if (!currentNote || locked) return;
   totalCount++;
@@ -192,7 +197,7 @@ function evaluateManualLetter(letter) {
     feedbackEl.className = 'feedback correct';
     lockAndAdvance(900);
   } else {
-    feedbackEl.textContent = `Non corretta — era ${currentNote.letter}${currentNote.octave}`;
+    feedbackEl.textContent = `Non corretta — era ${theory.formatNoteLabel(currentNote)}`;
     feedbackEl.className = 'feedback wrong';
     lockAndAdvance(1800);
   }
@@ -254,6 +259,9 @@ positionSelect.addEventListener('change', () => {
     nextNote();
   });
 });
+// Toggle accidentali: intenzionalmente non salvato in localStorage e non incluso
+// in saveSettings/loadSavedSettings — riparte sempre spento (false) a ogni apertura.
+accidentalsToggle.addEventListener('change', () => nextNote());
 
 /* ---------- avvio ---------- */
 nextNote();

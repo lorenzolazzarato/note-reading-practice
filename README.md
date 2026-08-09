@@ -27,6 +27,13 @@ quello lasciato sul basso. Non viene salvato altro (punteggio, cronologia):
 quello resta solo per la sessione corrente, come da scelta di design del
 progetto.
 
+Il toggle "Includi accidentali" fa eccezione di proposito: **non viene
+salvato**, riparte sempre spento (`false`) a ogni apertura dell'app, anche se
+lo hai attivato nella sessione precedente. Quando è attivo, alle note della
+scala di Do maggiore vengono occasionalmente aggiunti diesis o bemolle sulla
+stessa posizione diatonica (rigo/spazio), da leggere e suonare per intero
+(il riconoscimento via microfono è già cromatico, non serve nulla in più).
+
 ## Sviluppo in locale
 
 Il microfono richiede un contesto sicuro (HTTPS o `localhost`): non basta

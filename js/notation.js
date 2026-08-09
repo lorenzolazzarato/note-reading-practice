@@ -1,11 +1,19 @@
 // Disegna una nota sul pentagramma usando VexFlow (caricato globalmente come `Vex` in index.html).
-// Riceve un oggetto nota già risolto da music-theory.js: { letter, octave, clef }.
+// Riceve un oggetto nota già risolto da music-theory.js: { letter, octave, clef, accidental }.
+
+function makeStaveNote(VF, note) {
+  const key = `${note.letter.toLowerCase()}${note.accidental || ''}/${note.octave}`;
+  const staveNote = new VF.StaveNote({ clef: note.clef, keys: [key], duration: 'w' });
+  if (note.accidental) {
+    staveNote.addModifier(new VF.Accidental(note.accidental), 0);
+  }
+  return staveNote;
+}
 
 export function renderNote(container, note, clefMode) {
   container.innerHTML = '';
   const VF = Vex.Flow;
   const renderer = new VF.Renderer(container, VF.Renderer.Backends.SVG);
-  const key = `${note.letter.toLowerCase()}/${note.octave}`;
 
   if (clefMode !== 'grand') {
     renderer.resize(300, 160);
@@ -14,7 +22,7 @@ export function renderNote(container, note, clefMode) {
     stave.addClef(note.clef);
     stave.setContext(context).draw();
 
-    const staveNote = new VF.StaveNote({ clef: note.clef, keys: [key], duration: 'w' });
+    const staveNote = makeStaveNote(VF, note);
     const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
     voice.addTickables([staveNote]);
     new VF.Formatter().joinVoices([voice]).format([voice], 200);
@@ -34,7 +42,7 @@ export function renderNote(container, note, clefMode) {
     new VF.StaveConnector(trebleStave, bassStave).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(context).draw();
 
     const activeStave = note.clef === 'treble' ? trebleStave : bassStave;
-    const staveNote = new VF.StaveNote({ clef: note.clef, keys: [key], duration: 'w' });
+    const staveNote = makeStaveNote(VF, note);
     const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
     voice.addTickables([staveNote]);
     new VF.Formatter().joinVoices([voice]).format([voice], 200);

@@ -79,6 +79,25 @@ select{
   grid-column: span 2;
 }
 .range-fields .field{ flex:1; }
+.field-checkbox{
+  grid-column: 1 / -1;
+}
+.field-checkbox label{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  text-transform:none;
+  letter-spacing:normal;
+  font-size: 14px;
+  color: var(--ink);
+  cursor:pointer;
+}
+.field-checkbox input[type="checkbox"]{
+  width: 20px;
+  height: 20px;
+  accent-color: var(--brass);
+  cursor:pointer;
+}
 .staff-card{
   text-align:center;
   padding: 22px 10px 10px;

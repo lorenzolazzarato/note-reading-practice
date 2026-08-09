@@ -1,9 +1,14 @@
-// Teoria musicale per la scala di Do maggiore (solo note naturali, nessun accidente).
-// Modulo puro: nessuna dipendenza da DOM, VexFlow o audio.
+// Teoria musicale per la scala di Do maggiore, con accidentali opzionali
+// (diesis/bemolle) sulle stesse posizioni diatoniche. Modulo puro: nessuna
+// dipendenza da DOM, VexFlow o audio.
 
 export const LETTERS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 export const SHARP_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const SEMITONE_OF = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+const ACCIDENTAL_SEMITONES = { '': 0, '#': 1, b: -1 };
+// Pool pesato: metà delle volte nessun accidente, così l'esercizio resta
+// leggibile anche con l'opzione attiva invece di alterare sempre ogni nota.
+const ACCIDENTAL_POOL = ['', '', '#', 'b'];
 
 export function diatonicIndex(letter, octave) {
   return octave * 7 + LETTERS.indexOf(letter);
@@ -14,8 +19,13 @@ export function letterOfIndex(idx) {
 export function octaveOfIndex(idx) {
   return Math.floor(idx / 7);
 }
-export function noteToMidi(letter, octave) {
-  return (octave + 1) * 12 + SEMITONE_OF[letter];
+export function noteToMidi(letter, octave, accidental = '') {
+  return (octave + 1) * 12 + SEMITONE_OF[letter] + (ACCIDENTAL_SEMITONES[accidental] || 0);
+}
+// Etichetta leggibile di una nota, es. { letter:'F', accidental:'#', octave:4 } -> "F♯4".
+export function formatNoteLabel(note) {
+  const symbol = note.accidental === '#' ? '♯' : note.accidental === 'b' ? '♭' : '';
+  return `${note.letter}${symbol}${note.octave}`;
 }
 export function midiToName(midi) {
   const name = SHARP_NAMES[((midi % 12) + 12) % 12];
@@ -73,6 +83,7 @@ export function pickRandomNote(config, excludeIdx) {
   const usable = pool.length ? pool : candidates;
   const note = usable[Math.floor(Math.random() * usable.length)];
   note.clef = assignedClef(note.diatonicIdx, config.clef);
-  note.midi = noteToMidi(note.letter, note.octave);
+  note.accidental = config.accidentals ? ACCIDENTAL_POOL[Math.floor(Math.random() * ACCIDENTAL_POOL.length)] : '';
+  note.midi = noteToMidi(note.letter, note.octave, note.accidental);
   return note;
 }
