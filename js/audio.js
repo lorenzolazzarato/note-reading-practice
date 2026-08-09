@@ -5,10 +5,10 @@ import { PitchDetector } from 'https://esm.sh/pitchy@4';
 import { freqToMidi } from './music-theory.js';
 
 const STABILITY_WINDOW = 5;
-const CLARITY_THRESHOLD = 0.92;
+const CLARITY_THRESHOLD = 0.88;
 const MIN_FREQ = 55; // poco sotto A1
 const MAX_FREQ = 1400; // sopra C6, margine per estendere il range in futuro
-const MIN_RMS = 0.004;
+const MIN_RMS = 0.003;
 
 function median(arr) {
   const s = [...arr].sort((a, b) => a - b);
