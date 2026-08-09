@@ -56,7 +56,10 @@ export function assignedClef(diatonicIdx, clefMode) {
   return diatonicIdx >= MIDDLE_C_IDX ? 'treble' : 'bass';
 }
 
-export function pickRandomNote(config) {
+// excludeIdx: diatonicIdx da evitare se possibile (tipicamente la nota appena mostrata),
+// per non ripetere la stessa nota due volte di fila. Se è l'unico candidato disponibile,
+// viene comunque riproposto: non c'è altro modo di generarne una diversa.
+export function pickRandomNote(config, excludeIdx) {
   const range = buildRange(config.minIdx, config.maxIdx);
   const candidates = range.filter((n) => {
     const clef = assignedClef(n.diatonicIdx, config.clef);
@@ -66,7 +69,9 @@ export function pickRandomNote(config) {
     return true;
   });
   if (!candidates.length) return null;
-  const note = candidates[Math.floor(Math.random() * candidates.length)];
+  const pool = candidates.filter((n) => n.diatonicIdx !== excludeIdx);
+  const usable = pool.length ? pool : candidates;
+  const note = usable[Math.floor(Math.random() * usable.length)];
   note.clef = assignedClef(note.diatonicIdx, config.clef);
   note.midi = noteToMidi(note.letter, note.octave);
   return note;

@@ -133,7 +133,7 @@ function readConfig() {
 
 function nextNote() {
   const config = readConfig();
-  const note = theory.pickRandomNote(config);
+  const note = theory.pickRandomNote(config, currentNote ? currentNote.diatonicIdx : undefined);
   feedbackEl.textContent = '';
   feedbackEl.className = 'feedback';
   if (!note) {
